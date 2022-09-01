@@ -1,0 +1,117 @@
+html,
+body {
+    height: 100%;
+    width: 100%;
+}
+
+body {
+    background-color: #ECF0F1;
+    color: #2C3E50;
+    margin: 0;
+    user-select: none;
+    font-family: sans-serif;
+    font-size: 3.6vmin;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.game-container {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 8vmin;
+
+    .items {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 3vmin;
+        padding: 3vmin;
+        height: 100%;
+        width: 100%;
+        max-height: 50vmin;
+        max-width: 50vmin;
+        background-color: #2C3E50;
+        border-radius: 1.2vmin;
+
+        .item {
+            background-color: #7BC8F3;
+            border-radius: 1.2vmin;
+            font-size: 6vmin;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            &-9 {
+                visibility: hidden;
+            }
+
+            &:hover {
+                cursor: pointer;
+            }
+        }
+
+    }
+
+    .menu {
+        width: 100%;
+        max-width: 90vmin;
+        font-weight: bold;
+        display: flex;
+        justify-content: space-between;
+        text-align: center;
+
+        div {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .difficulty {
+            background-color: #7BC8F3;
+            border-radius: 1.2vmin;
+            padding: 2vmin;
+            width: 20vmin;
+
+            input {
+                margin: 0;
+                width: 100%;
+            }
+        }
+
+    }
+
+    .button {
+        background-color: #7BC8F3;
+        border-radius: 1.2vmin;
+        padding: 2vmin;
+        width: 20vmin;
+        transition: background-color 0.3s;
+
+        &:hover {
+            background-color: #2C3E50;
+            color: #7BC8F3;
+            cursor: pointer;
+        }
+    }
+
+}
+
+@media (max-width: 600px) {
+    .game-container {
+
+        .menu {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 3vmin;
+            font-size: 4vmin;
+        }
+    }
+}
