@@ -30,21 +30,25 @@ function start() {
         let empty_field_position = random_items.indexOf(9);
 
         if (e.target.classList.contains('item')) {
+
+            let clicked = e.target.innerText;
+            let switch_allowed = [];
             
-            if ([0, 2, 6, 8].includes(empty_field_position)) {
-                console.log("2 Kontakte");
+            if (empty_field_position === 0) {
+                console.log(random_items[1], random_items[3]);
             }
 
-            if ([1, 3, 5, 7].includes(empty_field_position)) {
-                console.log("3 Kontakte");
+            if (empty_field_position === 1) {
+                console.log(random_items[0], random_items[2], random_items[4]);
             }
-            
-            if (empty_field_position == 4) {
-                console.log("4 Kontakte");
-            }
-            
-            
 
+            if (empty_field_position === 2) {
+                console.log(random_items[1], random_items[5]);
+            }
+            
+            if (empty_field_position === 3) {
+                console.log(random_items[0], random_items[4], random_items[6]);
+            }
 
 
         }
