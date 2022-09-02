@@ -88,11 +88,20 @@ body {
   cursor: pointer;
 }
 @media (max-width: 600px) {
+  .game-container .items {
+    max-width: 70vmin;
+    max-height: 70vmin;
+  }
   .game-container .menu {
     flex-direction: column;
     align-items: center;
     text-align: center;
     gap: 3vmin;
-    font-size: 4vmin;
+    font-size: 5vmin;
+  }
+  .game-container .menu .difficulty,
+  .game-container .menu .button {
+    padding: 4vmin;
+    width: 40vmin;
   }
 }
