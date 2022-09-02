@@ -1,25 +1,19 @@
-// Difficulty
+const btn_difficulty = document.querySelector(".game__btn--difficulty");
+let states = ["medium", "hard", "easy"];
+let difficulty_value = 0;
 
-const difficulty_input = document.querySelector(".game-container .difficulty input");
-const difficulty_output = document.querySelector(".game-container .difficulty .output");
+btn_difficulty.addEventListener('click', () => {
+    btn_difficulty.innerText = states[difficulty_value];
+    difficulty_value = (difficulty_value + 1) % states.length;
+});
 
-const difficulty_names = ["easy", "medium", "hard"];
 
-const difficulty = () => {
-    document.querySelector(".game-container .difficulty .output").innerText = difficulty_names[difficulty_input.value];
-};
-
-difficulty();
-difficulty_input.addEventListener('input', difficulty);
-
-// Difficulty
-
-const items_container = document.querySelector('.game-container .items');
+const items_container = document.querySelector('.game__board');
 
 function new_pattern(items) {
     items_container.innerHTML = "";
     items.forEach(item => {
-        items_container.innerHTML += `<div class="item item-${item}">${item}</div>`;
+        items_container.innerHTML += `<div class="game__item game__item--${item}">${item}</div>`;
     });
 }
 
@@ -32,7 +26,7 @@ function start() {
 
     items_container.addEventListener('click', (e) => {
 
-        if (e.target.classList.contains('item')) {
+        if (e.target.classList.contains('game__item')) {
 
             let empty_field_position = random_items.indexOf(9);
             let clicked = random_items.indexOf(Number(e.target.innerText));
@@ -74,7 +68,7 @@ function start() {
                 switch_allowed.push(5, 7);
             }
 
-            console.log(`clicked: ${clicked}, empty_field_position: ${empty_field_position}`);
+            // console.log(`clicked: ${clicked}, empty_field_position: ${empty_field_position}`);
 
             if (switch_allowed.includes(clicked)) {
                 [random_items[empty_field_position], random_items[clicked]] = [random_items[clicked], random_items[empty_field_position]];
@@ -84,10 +78,8 @@ function start() {
         }
     });
 
-
-
 }
 
-const start_button = document.querySelector('.game-container .menu .start');
+const start_button = document.querySelector('.game__btn--start');
 
 start_button.addEventListener('click', start);
