@@ -80,7 +80,7 @@ body {
   color: #7BC8F3;
   cursor: pointer;
 }
-@media (max-width: 450px) {
+@media (max-width: 500px) {
   body {
     font-size: 5vmin;
   }

@@ -7,7 +7,6 @@ btn_difficulty.addEventListener('click', () => {
     difficulty_value = (difficulty_value + 1) % states.length;
 });
 
-
 const items_container = document.querySelector('.game__board');
 
 function new_pattern(items) {
@@ -19,14 +18,17 @@ function new_pattern(items) {
 
 function start() {
     const max_items = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-
-    const random_items = max_items.sort((a, b) => 0.5 - Math.random());
+    const random_items = max_items.slice().sort((a, b) => 0.5 - Math.random());
 
     new_pattern(random_items);
 
     items_container.addEventListener('click', (e) => {
 
         if (e.target.classList.contains('game__item')) {
+
+            if (max_items.toString() === random_items.toString()) {
+                console.log('gewonnen!');
+            }
 
             let empty_field_position = random_items.indexOf(9);
             let clicked = random_items.indexOf(Number(e.target.innerText));
