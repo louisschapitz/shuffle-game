@@ -1,6 +1,7 @@
 @primary_color: #2C3E50;
 @secondary_color: #7BC8F3;
 @body_background: #ECF0F1;
+@accent_color: #27b80a;
 
 @body_font-size: 3.6vmin;
 @body_font-size_mobile: 5vmin;
@@ -47,6 +48,7 @@ body {
     width: 100%;
     .flex();
     gap: @game_padding;
+    position: relative;
 
     .game__board {
         display: grid;
@@ -59,6 +61,27 @@ body {
         max-width: @board_size;
         background-color: @primary_color;
         border-radius: @board_item_border-radius;
+        position: relative;
+
+        &.game__board--disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        &.game__board--win::before {
+            content: "\f058";
+            position: absolute;
+            color: @accent_color;
+            background-color: rgba(255, 255, 255, 0.5);
+            font-size: 26vmin;
+            font-family: "Font Awesome 5 Free";
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-content: space-around;
+            flex-wrap: wrap;
+        }
 
         .game__item {
             background-color: @secondary_color;
@@ -66,6 +89,14 @@ body {
             font-size: @game_item_font-size;
             font-weight: bold;
             .flex(row);
+            /*
+            content: url(https://via.placeholder.com/150x150);
+            width: 100%;
+            */
+
+            &--correct {
+                background-color: @accent_color;
+            }
 
             &--9 {
                 visibility: hidden;
@@ -101,13 +132,23 @@ body {
                 cursor: pointer;
             }
 
+            &.game__btn--disabled {
+                opacity: 0.5;
+                pointer-events: none;
+
+                &:hover {
+                    background-color: @secondary_color;
+                    color: @primary_color;
+                }
+            }
+
         }
 
     }
 
 }
 
-@media (max-width: 500px) {
+@media (max-width: 400px) {
     body {
         font-size: @body_font-size_mobile;
     }

@@ -5,12 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <title>Shuffle Game</title>
 </head>
 
 <body>
+
     <div class="game">
-        <div class="game__board">
+        <div class="game__board game__board--disabled">
             <div class="game__item game__item--1">1</div>
             <div class="game__item game__item--2">2</div>
             <div class="game__item game__item--3">3</div>
@@ -23,8 +25,8 @@
         </div>
         <div class="game__menu">
             <div class="game__btn game__btn--start">start</div>
-            <div class="game__btn game__btn--restart">restart</div>
-            <div class="game__btn game__btn--difficulty">easy</div>
+            <div class="game__btn game__btn--restart game__btn--disabled">restart</div>
+            <div class="game__btn game__btn--difficulty game__btn--disabled">easy</div>
         </div>
     </div>
 
