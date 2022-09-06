@@ -54,6 +54,41 @@ function btnVisibility() {
     btn_difficulty.classList.toggle('game__btn--disabled');
 }
 
+/*
+function timer(status) {
+    let before_time = new Date().getSeconds();
+
+    function reload() {
+        if (status == 1) {
+            let current_time = new Date().getSeconds();
+            game_timer.innerText = current_time - before_time;
+
+            console.log('test');
+
+            setTimeout('reload' , 1000);
+        } 
+    }
+
+    reload();
+
+}
+*/
+
+const game_timer = document.querySelector('.game__timer');
+function timerStart(status) {
+    if (status == 1) {
+
+        let i = 0;
+
+        setInterval(() => {
+            if (game_status == 1) {
+                i++;
+                game_timer.innerText = i/3600;
+            }
+        }, 1000);
+    }
+}
+
 start_button.addEventListener('click', () => {
     if (start_button.classList.contains('game__btn--disabled')) {
         return;
@@ -63,6 +98,7 @@ start_button.addEventListener('click', () => {
         new_pattern(random_items());
         correctMarker();
         btnVisibility();
+        timerStart(1);
     }
 });
 

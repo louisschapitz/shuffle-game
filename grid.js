@@ -35,6 +35,8 @@ function grid_positon(clicked) {
     let row_limit = all_items.length;
     let col_limit = Math.sqrt(row_limit);
 
+    console.log('row_limit: '+row_limit+' col_limit: '+col_limit);
+
     for (let i = 0; i < row_limit; i++) {
         // var three = data[i] + data[i + 1] + data[i + 2];
 
@@ -43,7 +45,7 @@ function grid_positon(clicked) {
         }
     
     }
-    
+
     //
 
     if (switch_allowed.includes(clicked)) {

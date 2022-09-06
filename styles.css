@@ -23,7 +23,7 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 8vmin;
+  gap: 6vmin;
   position: relative;
 }
 .game .game__board {
