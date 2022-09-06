@@ -1,7 +1,7 @@
 @primary_color: #2C3E50;
 @secondary_color: #7BC8F3;
 @body_background: #ECF0F1;
-@accent_color: #27b80a;
+@accent_color: #E74C3C;
 
 @body_font-size: 3.6vmin;
 @body_font-size_mobile: 5vmin;
@@ -71,7 +71,7 @@ body {
         &.game__board--win::before {
             content: "\f058";
             position: absolute;
-            color: @accent_color;
+            color: @body_background;
             background-color: @primary_color;
             font-size: 26vmin;
             border-radius: @board_item_border-radius;
@@ -93,6 +93,7 @@ body {
 
             &--correct {
                 background-color: @accent_color;
+                color: @body_background;
             }
 
             &--9 {
@@ -137,6 +138,11 @@ body {
                     background-color: @secondary_color;
                     color: @primary_color;
                 }
+            }
+
+            &--hard {
+                background-color: @accent_color;
+                color: @body_background;
             }
 
         }

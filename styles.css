@@ -46,7 +46,7 @@ body {
 .game .game__board.game__board--win::before {
   content: "\f058";
   position: absolute;
-  color: #27b80a;
+  color: #ECF0F1;
   background-color: #2C3E50;
   font-size: 26vmin;
   border-radius: 1.2vmin;
@@ -69,7 +69,8 @@ body {
   align-items: center;
 }
 .game .game__board .game__item--correct {
-  background-color: #27b80a;
+  background-color: #E74C3C;
+  color: #ECF0F1;
 }
 .game .game__board .game__item--9 {
   visibility: hidden;
@@ -111,6 +112,10 @@ body {
 .game .game__menu .game__btn.game__btn--disabled:hover {
   background-color: #7BC8F3;
   color: #2C3E50;
+}
+.game .game__menu .game__btn--hard {
+  background-color: #E74C3C;
+  color: #ECF0F1;
 }
 .game--img .game__board {
   gap: 0;
