@@ -16,8 +16,17 @@ function random_items() {
 const states = ["medium", "hard", "easy"]; // 4x4 | 5x5 | 3x3
 let difficulty_value = 0;
 btn_difficulty.addEventListener('click', () => {
-    btn_difficulty.innerText = states[difficulty_value];
-    difficulty_value = (difficulty_value + 1) % states.length;
+    if (game_status == 0) {
+        btn_difficulty.innerText = states[difficulty_value];
+        difficulty_value = (difficulty_value + 1) % states.length;
+    
+        if (difficulty_value > 0) {
+            game_container.classList.add('game--img');
+        }
+        else {
+            game_container.classList.remove('game--img');
+        }
+    }
 });
 
 function new_pattern(items) {
@@ -37,6 +46,7 @@ start_button.addEventListener('click', () => {
         start_button.classList.toggle('game__btn--disabled');
         restart_button.classList.toggle('game__btn--disabled');
         items_container.classList.toggle('game__board--disabled');
+        btn_difficulty.classList.toggle('game__btn--disabled');
     }
 });
 
@@ -50,6 +60,7 @@ restart_button.addEventListener('click', () => {
         start_button.classList.toggle('game__btn--disabled');
         restart_button.classList.toggle('game__btn--disabled');
         items_container.classList.toggle('game__board--disabled');
+        btn_difficulty.classList.toggle('game__btn--disabled');
     }
 });
 
@@ -116,6 +127,7 @@ game_container.addEventListener('click', e => {
                     start_button.classList.toggle('game__btn--disabled');
                     restart_button.classList.toggle('game__btn--disabled');
                     items_container.classList.remove('game__board--win');
+                    btn_difficulty.classList.toggle('game__btn--disabled');
                 }, 1000);
 
             }
