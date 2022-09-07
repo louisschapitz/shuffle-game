@@ -1,3 +1,9 @@
+/*
+Funktion zum Überprüfen, ob das übermittelte Feld neben dem leeren Feld liegt oder nicht.
+
+Wenn die übermittelte Kachel benachbart mit der leeren Kachel ist, dann wird diese
+mit der leeren Kachel getauscht und das Grid neu erstellt.
+*/
 function grid_positon(clicked) {
     let switch_allowed = [];
     let empty_field_position = current_items.indexOf(9);
@@ -30,7 +36,7 @@ function grid_positon(clicked) {
         switch_allowed.push(5, 7);
     }
 
-    //
+    /*
 
     let row_limit = all_items.length;
     let col_limit = Math.sqrt(row_limit);
@@ -46,11 +52,17 @@ function grid_positon(clicked) {
     
     }
 
-    //
+    */
 
     if (switch_allowed.includes(clicked)) {
         [current_items[empty_field_position], current_items[clicked]] = [current_items[clicked], current_items[empty_field_position]];
         new_pattern(current_items);
+    }
+    else {
+        if (clicked != 9) {
+            console.log('Die Kacheln müssen benachbart sein.');
+        }
+        return;
     }
 
 }

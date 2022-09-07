@@ -1,3 +1,15 @@
+/*
+JavaScript Shuffle Game (Sliding Puzzle)
+4 Schwierigkeitsstufen
+
+Beschreibung:
+Das Ziel des Minispiels ist es, die Kacheln schnellstmöglich in die korrekte Reihenfolge zu bringen.
+Auf dem Spielfeld ist ein Feld jeweils leer.
+Mit einem Klick auf ein benachbartes Feld kann das Feld verschoben werden.
+Sobald sich eine Kachel an ihrer richtigen Position befindet, ändert sich ihre Farbe.
+*/
+
+// Variablen bzw. Konstanten - Deklarierung
 const game_container = document.querySelector('.game');
 const items_container = document.querySelector('.game__board');
 const start_button = document.querySelector('.game__btn--start');
@@ -9,7 +21,28 @@ let all_items = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 const difficulty_states = ["easy2", "medium", "hard", "easy"];
 let difficulty_value = 0;
 let row_limit = 3;
+const game_timer = document.querySelector('.game__timer');
+let game_seconds = 0;
 
+// Funktion zum Einsetzen des HTML-Codes für jede Kachel in den Item-Container
+function new_pattern(items) {
+    items_container.innerHTML = "";
+    items.forEach(item => {
+        items_container.innerHTML += `<div class="game__item game__item--${item}">${item}</div>`;
+    });
+}
+
+// Funktion, um den Array all_items neu in zufälliger Reihenfolge in der Variable current_items zu speichern
+function random_items() {
+    current_items = all_items.slice().sort((a, b) => 0.5 - Math.random());
+    // current_items = [1, 2, 3, 4, 5, 9, 7, 8, 6]; // debug line
+    return current_items;
+}
+
+/*
+Funktion, um den Array all_items mit den Werten von 1 bis zum Quadrat vom Spaltenlimit zu überschreiben
+Grid CSS-Eigenschaftswert für Spaltenlimit in fr erstellen
+*/
 function all_items_refresh(row_limit) {
     all_items = [];
     for (let i = 1; i <= row_limit ** 2; i++) {
@@ -18,7 +51,7 @@ function all_items_refresh(row_limit) {
 
     let grid = "";
 
-    for (let i = 1; i <= row_limit; i++) {
+    for (let i = 0; i < row_limit; i++) {
         grid += '1fr ';
     }
 
@@ -28,11 +61,12 @@ function all_items_refresh(row_limit) {
     new_pattern(all_items);
 }
 
-function random_items() {
-    current_items = all_items.slice().sort((a, b) => 0.5 - Math.random());
-    return current_items; // current_items = [1, 2, 3, 4, 5, 9, 7, 8, 6]; // Easy
-}
-
+/*
+Sobald der Button (difficulty) geklickt wurde und das Spiel inaktiv ist:
+- Wird der Button-Text mit dem Wert der Schwierigkeit überschrieben
+- Bei Schwierigkeit 1, werden die CSS-Klassen game--img und game__btn--easy2 hinzugefügt, um das Design zu ändern
+- Am Ende der Funktion wird die Funktion all_items_refresh mit dem Parameter für die max. Spalten pro Zeile aufgerufen
+*/
 btn_difficulty.addEventListener('click', () => {
     if (game_status == 0) {
         let difficulty_value_text = difficulty_states[difficulty_value];
@@ -59,17 +93,10 @@ btn_difficulty.addEventListener('click', () => {
         }
 
         all_items_refresh(row_limit);
-
     }
 });
 
-function new_pattern(items) {
-    items_container.innerHTML = "";
-    items.forEach(item => {
-        items_container.innerHTML += `<div class="game__item game__item--${item}">${item}</div>`;
-    });
-}
-
+// Funktion, um allen Kacheln die CSS-Klasse game__item--correct hinzuzufügen, die sich an der richtigen Stelle befinden
 function correctMarker() {
     for (let i = 0; i < current_items.length; i++) {
         if (current_items[i] == all_items[i]) {
@@ -78,6 +105,7 @@ function correctMarker() {
     }
 }
 
+// Funktion, zum Umschalten der CSS-Klassen ...
 function btnVisibility() {
     start_button.classList.toggle('game__btn--disabled');
     restart_button.classList.toggle('game__btn--disabled');
@@ -85,6 +113,7 @@ function btnVisibility() {
     btn_difficulty.classList.toggle('game__btn--disabled');
 }
 
+// Funktion, um die Sekunden (Parameter) in das Format HH:MM:SS umzuwandeln
 function formatTime(given_seconds) {
     let dateObj = new Date(given_seconds * 1000);
     let hours = dateObj.getUTCHours();
@@ -98,9 +127,15 @@ function formatTime(given_seconds) {
     return timeString;
 }
 
-const game_timer = document.querySelector('.game__timer');
-let game_seconds = 0;
-
+/*
+Funktion zum Starten und automatischen Stoppen des Timers:
+- Die Hauptfunktion ist in der refresh Variable gespeichert
+    - Wenn das Spiel läuft, wird der Wert der Variable game_seconds um 1 erhöht und die Funktion mit game_seconds als Parameter aufgerufen
+    - Wenn das Spiel nicht mehr läuft, wird die Intervall-Funktion beendet und die Zeit auf 0 zurückgesetzt
+- Die Intervall-Funktion wird in der Variable ticker gespeichert
+    - Die Intervall-Funkion ruft alle 1000ms die refresh Funktion auf
+- Die Hauptfunktion wird direkt aufgerufen, da sonst eine Verzögerung beim Neustarten des Spiels von 1000ms auftritt
+*/
 function timer(status) {
 
     let refresh = () => {
@@ -121,6 +156,14 @@ function timer(status) {
 
 }
 
+/*
+(Neu-)Start Funktionen, bei Klick
+- Spielstatus wird (de)aktiviert
+- Funktion new_pattern wird aufgerufen, Grid neu generieren
+(- Die Funktion correctMarker wird aufgerufen, um alle Kacheln, die sich an der richtigen Position befinden, farbig zu markieren)
+- Funktion btnVisibility wird aufgerufen, Buttons de(aktivieren)
+- Timer wird de(aktiviert)
+*/
 start_button.addEventListener('click', () => {
     if (start_button.classList.contains('game__btn--disabled')) {
         return;
@@ -131,8 +174,6 @@ start_button.addEventListener('click', () => {
         correctMarker();
         btnVisibility();
         timer(1);
-
-        console.log(all_items);
     }
 });
 
@@ -148,6 +189,19 @@ restart_button.addEventListener('click', () => {
     }
 });
 
+/*
+Kernfunktion (Klick auf das Spielfeld)
+Wenn das Spiel läuft und das Ziel eine Kachel ist:
+    - Die Stelle, an der sich die Kachel im Spielfeld befindet, wird in der Variable clicked gespeichert
+    - Die Funktion grid_positon wird mit dem Parameter clicked aufgerufen => Prüfung, ob Felder benachbart sind => Verschieben
+    - Die Funktion correctMarker wird aufgerufen, um alle Kacheln, die sich an der richtigen Position befinden, farbig zu markieren
+    Wenn alle Kacheln sich an der richtigen Position befinden:
+        - Der items_container erhält die CSS-Klasse game__board--win
+        - Aktuelle Timerzeit wird in der Variable win_time gespeichert
+            Nach 1000ms:
+             - Meldung "Gewonnen!" mit der Spielzeit win_time wird angezeigt
+             - CSS-Klassen werden umgeschaltet
+*/
 game_container.addEventListener('click', e => {
 
     if (game_status === 1) {
@@ -177,5 +231,3 @@ game_container.addEventListener('click', e => {
         }
     }
 });
-
-
