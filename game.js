@@ -4,31 +4,62 @@ const start_button = document.querySelector('.game__btn--start');
 const restart_button = document.querySelector('.game__btn--restart');
 const btn_difficulty = document.querySelector('.game__btn--difficulty');
 let game_status = 0;
-
-const all_items = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 let current_items;
-function random_items() {
-    current_items = all_items.slice().sort((a, b) => 0.5 - Math.random());
-    // current_items = [1, 2, 3, 4, 5, 9, 7, 8, 6]; // Easy
-    return current_items;
+let all_items = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+const difficulty_states = ["easy2", "medium", "hard", "easy"];
+let difficulty_value = 0;
+let row_limit = 3;
+
+function all_items_refresh(row_limit) {
+    all_items = [];
+    for (let i = 1; i <= row_limit ** 2; i++) {
+        all_items.push(i);
+    }
+
+    let grid = "";
+
+    for (let i = 1; i <= row_limit; i++) {
+        grid += '1fr ';
+    }
+
+    items_container.style.gridTemplateColumns = grid;
+    items_container.style.gridTemplateRows = grid;
+
+    new_pattern(all_items);
 }
 
-const states = ["medium", "hard", "easy"]; // 4x4 | 5x5 | 3x3
-let difficulty_value = 0;
+function random_items() {
+    current_items = all_items.slice().sort((a, b) => 0.5 - Math.random());
+    return current_items; // current_items = [1, 2, 3, 4, 5, 9, 7, 8, 6]; // Easy
+}
+
 btn_difficulty.addEventListener('click', () => {
     if (game_status == 0) {
-        let difficulty_value_text = states[difficulty_value];
+        let difficulty_value_text = difficulty_states[difficulty_value];
         btn_difficulty.innerText = difficulty_value_text;
-        difficulty_value = (difficulty_value + 1) % states.length;
+        difficulty_value = (difficulty_value + 1) % difficulty_states.length;
 
-        if (difficulty_value == 2) {
+        if (difficulty_value == 1) {
             game_container.classList.add('game--img');
-            btn_difficulty.classList.add('game__btn--hard');
+            btn_difficulty.classList.add('game__btn--easy2');
+            row_limit = 3;
         }
         else {
             game_container.classList.remove('game--img');
-            btn_difficulty.classList.remove('game__btn--hard');
+            btn_difficulty.classList.remove('game__btn--easy2');
+            row_limit = 3;
         }
+
+        if (difficulty_value == 2) {
+            row_limit = 4;
+        }
+
+        if (difficulty_value == 3) {
+            row_limit = 5;
+        }
+
+        all_items_refresh(row_limit);
+
     }
 });
 
@@ -54,39 +85,40 @@ function btnVisibility() {
     btn_difficulty.classList.toggle('game__btn--disabled');
 }
 
-/*
-function timer(status) {
-    let before_time = new Date().getSeconds();
+function formatTime(given_seconds) {
+    let dateObj = new Date(given_seconds * 1000);
+    let hours = dateObj.getUTCHours();
+    let minutes = dateObj.getUTCMinutes();
+    let seconds = dateObj.getSeconds();
 
-    function reload() {
-        if (status == 1) {
-            let current_time = new Date().getSeconds();
-            game_timer.innerText = current_time - before_time;
+    let timeString = hours.toString().padStart(2, '0') + ':' +
+        minutes.toString().padStart(2, '0') + ':' +
+        seconds.toString().padStart(2, '0');
 
-            console.log('test');
-
-            setTimeout('reload' , 1000);
-        } 
-    }
-
-    reload();
-
+    return timeString;
 }
-*/
 
 const game_timer = document.querySelector('.game__timer');
-function timerStart(status) {
-    if (status == 1) {
+let game_seconds = 0;
 
-        let i = 0;
+function timer(status) {
 
-        setInterval(() => {
-            if (game_status == 1) {
-                i++;
-                game_timer.innerText = i/3600;
-            }
-        }, 1000);
-    }
+    let refresh = () => {
+        if (game_status == 1) {
+            game_seconds++;
+            game_timer.innerText = formatTime(game_seconds);
+        }
+        else {
+            clearInterval(ticker);
+            game_seconds = 0;
+            game_timer.innerText = formatTime(game_seconds);
+        }
+    };
+
+    let ticker = setInterval(refresh, 1000);
+
+    refresh();
+
 }
 
 start_button.addEventListener('click', () => {
@@ -98,7 +130,9 @@ start_button.addEventListener('click', () => {
         new_pattern(random_items());
         correctMarker();
         btnVisibility();
-        timerStart(1);
+        timer(1);
+
+        console.log(all_items);
     }
 });
 
@@ -110,6 +144,7 @@ restart_button.addEventListener('click', () => {
         game_status = 0;
         new_pattern(all_items);
         btnVisibility();
+        timer(0);
     }
 });
 
@@ -124,11 +159,12 @@ game_container.addEventListener('click', e => {
 
             if (all_items.toString() === current_items.toString()) {
 
-                game_status = 0;
                 items_container.classList.add('game__board--win');
+                let win_time = game_seconds;
+                game_status = 0;
 
                 setTimeout(() => {
-                    alert('Gewonnen!');
+                    alert(`Gewonnen! Zeit: ${formatTime(win_time)}`);
                     items_container.classList.toggle('game__board--disabled');
                     start_button.classList.toggle('game__btn--disabled');
                     restart_button.classList.toggle('game__btn--disabled');
@@ -141,3 +177,5 @@ game_container.addEventListener('click', e => {
         }
     }
 });
+
+

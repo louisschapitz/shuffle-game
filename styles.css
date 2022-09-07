@@ -29,6 +29,7 @@ body {
 .game .game__board {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
   gap: 3vmin;
   padding: 3vmin;
   height: 100%;
@@ -72,11 +73,14 @@ body {
   background-color: #E74C3C;
   color: #ECF0F1;
 }
-.game .game__board .game__item--9 {
-  visibility: hidden;
-}
 .game .game__board .game__item:hover {
   cursor: pointer;
+}
+.game .game__board .game__item--9 {
+  opacity: 0;
+}
+.game .game__board .game__item--9:hover {
+  cursor: default;
 }
 .game .game__menu {
   width: 100%;
@@ -113,7 +117,7 @@ body {
   background-color: #7BC8F3;
   color: #2C3E50;
 }
-.game .game__menu .game__btn--hard {
+.game .game__menu .game__btn--easy2 {
   background-color: #E74C3C;
   color: #ECF0F1;
 }
@@ -158,13 +162,19 @@ body {
 .game--img .game__board .game__item--9 {
   background-image: url("img/1.jpg");
 }
+.game--img .game__board .game__item--9:hover {
+  cursor: help;
+}
+.game--img .game__board .game__item--9:active {
+  opacity: 1;
+}
 .game.game--img .game__board--win,
 .game.game--img .game__board.game__board--disabled {
   opacity: 1;
 }
 .game.game--img .game__board--win .game__item--9,
 .game.game--img .game__board.game__board--disabled .game__item--9 {
-  visibility: visible;
+  opacity: 1;
 }
 .game.game--img .game__board--win::before {
   border-radius: 0;
@@ -181,6 +191,10 @@ body {
   }
   .game .game__board .game__item {
     font-size: 8vmin;
+  }
+  .game--img .game__board {
+    max-height: 76vmin;
+    max-width: 76vmin;
   }
   .game .game__menu {
     flex-direction: column;
