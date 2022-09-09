@@ -38,7 +38,9 @@ function new_pattern(items) {
 // Funktion, um den Array all_items neu in zufälliger Reihenfolge in der Variable current_items zu speichern
 function random_items() {
     current_items = all_items.slice().sort((a, b) => 0.5 - Math.random());
+
     // current_items = [1, 2, 3, 4, 5, 9, 7, 8, 6]; // debug line
+
     return current_items;
 }
 
@@ -234,10 +236,12 @@ game_container.addEventListener('click', e => {
 
                 items_container.classList.add('game__board--win');
                 let win_time = game_seconds;
+                let win_count = move_count;
                 game_status = 0;
+                moveCount(0);
 
                 setTimeout(() => {
-                    alert(`Gewonnen! Zeit: ${formatTime(win_time)}`);
+                    alert(`Gewonnen! Zeit: ${formatTime(win_time)} - Versuche: ${win_count}`);
                     items_container.classList.toggle('game__board--disabled');
                     start_button.classList.toggle('game__btn--disabled');
                     restart_button.classList.toggle('game__btn--disabled');
