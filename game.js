@@ -1,10 +1,11 @@
 /*
 JavaScript Shuffle Game (Sliding Puzzle)
 4 Schwierigkeitsstufen
+>> Lemundo - 2022 <<
 
 Beschreibung:
-Das Ziel des Minispiels ist es, die Kacheln schnellstmöglich in die korrekte Reihenfolge zu bringen.
-Auf dem Spielfeld ist ein Feld jeweils leer.
+Das Ziel des Minispiels ist es, die Kacheln schnellstmöglich mit möglichst wenigen Versuchen
+in die korrekte Reihenfolge zu bringen. Auf dem Spielfeld ist ein Feld jeweils leer.
 Mit einem Klick auf ein benachbartes Feld kann das Feld verschoben werden.
 Sobald sich eine Kachel an ihrer richtigen Position befindet, ändert sich ihre Farbe.
 */
@@ -23,6 +24,8 @@ let difficulty_value = 0;
 let row_limit = 3;
 const game_timer = document.querySelector('.game__timer');
 let game_seconds = 0;
+const game_moves = document.querySelector('.game__count');
+let move_count = 0;
 
 // Funktion zum Einsetzen des HTML-Codes für jede Kachel in den Item-Container
 function new_pattern(items) {
@@ -157,6 +160,21 @@ function timer(status) {
 }
 
 /*
+Funktion zum Zurück(Setzen) des Zählers, Anzahl der Versuche
+*/
+function moveCount(status) {
+
+    if (status == 1) {
+        move_count++;
+    }
+    else {
+        move_count = 0;
+    }
+    game_moves.innerText = move_count;
+
+}
+
+/*
 (Neu-)Start Funktionen, bei Klick
 - Spielstatus wird (de)aktiviert
 - Funktion new_pattern wird aufgerufen, Grid neu generieren
@@ -186,6 +204,7 @@ restart_button.addEventListener('click', () => {
         new_pattern(all_items);
         btnVisibility();
         timer(0);
+        moveCount(0);
     }
 });
 

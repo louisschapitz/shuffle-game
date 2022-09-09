@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="de">
 
 <head>
@@ -6,13 +7,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <title>Shuffle Game</title>
+    <title>Shuffle Game (Sliding Puzzle)</title>
 </head>
 
 <body>
 
     <div class="game">
-        <div class="game__timer">00:00:00</div>
+        <div class="game__status">
+            <div class="game__timer">00:00:00</div>
+            <div class="game__count">0</div>
+        </div>
         <div class="game__board game__board--disabled">
             <div class="game__item game__item--1">1</div>
             <div class="game__item game__item--2">2</div>

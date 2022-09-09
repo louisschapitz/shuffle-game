@@ -50,6 +50,26 @@ body {
     gap: @game_padding;
     position: relative;
 
+    .game__status {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        max-width: @board_size;
+
+        .game__timer::before {
+            font-family: "Font Awesome 5 Free";
+            content: "\f017";
+            margin-right: 1vmin;
+        }
+
+        .game__count::before {
+            font-family: "Font Awesome 5 Free";
+            content: "\f257";
+            margin-right: 1vmin;
+        }
+    }
+
     .game__board {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
@@ -252,6 +272,12 @@ body {
     }
 
     .game {
+
+        .game__status {
+            max-width: @board_size_mobile;
+            flex-direction: column;
+            gap: 1vmin;
+        }
 
         .game__board {
             max-width: @board_size_mobile;
