@@ -168,6 +168,16 @@ body {
 .game--img .game__board .game__item--9:active {
   opacity: 1;
 }
+.game--img .game__board .game__item--correct::before {
+  content: "\f058";
+  position: absolute;
+  color: #ECF0F1;
+  font-size: 2vmin;
+  font-family: "Font Awesome 5 Free";
+  width: 100%;
+  height: 100%;
+  text-align: right;
+}
 .game.game--img .game__board--win,
 .game.game--img .game__board.game__board--disabled {
   opacity: 1;

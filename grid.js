@@ -8,32 +8,65 @@ function grid_positon(clicked) {
     let switch_allowed = [];
     let empty_field_position = current_items.indexOf(9);
 
-    if (empty_field_position === 0) {
-        switch_allowed.push(1, 3);
+    if (difficulty_value == 0 || difficulty_value == 1) {
+        if (empty_field_position === 0) {
+            switch_allowed.push(1, 3);
+        }
+        else if (empty_field_position === 1) {
+            switch_allowed.push(0, 2, 4);
+        }
+        else if (empty_field_position === 2) {
+            switch_allowed.push(1, 5);
+        }
+        else if (empty_field_position === 3) {
+            switch_allowed.push(0, 4, 6);
+        }
+        else if (empty_field_position === 4) {
+            switch_allowed.push(1, 3, 5, 7);
+        }
+        else if (empty_field_position === 5) {
+            switch_allowed.push(2, 4, 8);
+        }
+        else if (empty_field_position === 6) {
+            switch_allowed.push(3, 7);
+        }
+        else if (empty_field_position === 7) {
+            switch_allowed.push(6, 4, 8);
+        }
+        else if (empty_field_position === 8) {
+            switch_allowed.push(5, 7);
+        }
     }
-    else if (empty_field_position === 1) {
-        switch_allowed.push(0, 2, 4);
-    }
-    else if (empty_field_position === 2) {
-        switch_allowed.push(1, 5);
-    }
-    else if (empty_field_position === 3) {
-        switch_allowed.push(0, 4, 6);
-    }
-    else if (empty_field_position === 4) {
-        switch_allowed.push(1, 3, 5, 7);
-    }
-    else if (empty_field_position === 5) {
-        switch_allowed.push(2, 4, 8);
-    }
-    else if (empty_field_position === 6) {
-        switch_allowed.push(3, 7);
-    }
-    else if (empty_field_position === 7) {
-        switch_allowed.push(6, 4, 8);
-    }
-    else if (empty_field_position === 8) {
-        switch_allowed.push(5, 7);
+    else {
+
+        // console.log(all_items);
+        // row_limit
+
+        let test_arr = all_items;
+        let row_array = [];
+        let new_arr = [];
+
+        for (let i = 0; i < 4 ** 2; i += 4) {
+            let sub_arr = [];
+            sub_arr.push(test_arr[i], test_arr[i + 1], test_arr[i + 2], test_arr[i + 3]);
+            new_arr.push(sub_arr);
+        }
+
+        // console.log(new_arr.indexOf(clicked));
+
+        for (let y = 0; y < new_arr.length; y++) {
+
+            for (let y = 0; y < new_arr.length; y++) {
+                if (new_arr[y].indexOf(clicked)) {
+                    console.log(new_arr[y]);
+                }
+            }
+
+
+        }
+
+
+
     }
 
     /*
