@@ -37,6 +37,7 @@ function new_pattern(items) {
 }
 
 // Funktion, um den Array all_items neu in zufälliger Reihenfolge in der Variable current_items zu speichern
+// slice() gibt die kompletten Array-Elemente von X bis Y aus
 function random_items() {
     current_items = all_items.slice().sort((a, b) => 0.5 - Math.random());
 
