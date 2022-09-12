@@ -27,19 +27,22 @@ let game_seconds = 0;
 const game_moves = document.querySelector('.game__count');
 let move_count = 0;
 
-// Funktion zum Einsetzen des HTML-Codes für jede Kachel in den Item-Container
+// Funktion zum Einsetzen des HTML-Codes für jede Kachel in den Item-Container, und ausblenden des letzten Felds
 function new_pattern(items) {
     items_container.innerHTML = "";
     items.forEach(item => {
         items_container.innerHTML += `<div class="game__item game__item--${item}">${item}</div>`;
     });
+    document.querySelector(`.game__item--${all_items.length}`).classList.add('game__item--hidden');
 }
 
 // Funktion, um den Array all_items neu in zufälliger Reihenfolge in der Variable current_items zu speichern
 function random_items() {
     current_items = all_items.slice().sort((a, b) => 0.5 - Math.random());
 
-    // current_items = [1, 2, 3, 4, 5, 9, 7, 8, 6]; // debug line
+    // Debug, Easy
+    // current_items = [1, 2, 3, 4, 5, 9, 7, 8, 6];
+    // current_items = [1, 2, 3, 9, 5, 6, 7, 8, 4, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25];
 
     return current_items;
 }

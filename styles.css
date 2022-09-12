@@ -76,6 +76,9 @@ body {
   align-content: space-around;
   flex-wrap: wrap;
 }
+.game .game__board.game__board--win .game__item--correct::before {
+  display: none;
+}
 .game .game__board .game__item {
   background-color: #7BC8F3;
   border-radius: 1.2vmin;
@@ -93,10 +96,10 @@ body {
 .game .game__board .game__item:hover {
   cursor: pointer;
 }
-.game .game__board .game__item--9 {
+.game .game__board .game__item--hidden {
   opacity: 0;
 }
-.game .game__board .game__item--9:hover {
+.game .game__board .game__item--hidden:hover {
   cursor: default;
 }
 .game .game__menu {

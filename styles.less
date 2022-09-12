@@ -89,20 +89,29 @@ body {
             pointer-events: none;
         }
 
-        &.game__board--win::before {
-            content: "\f058";
-            position: absolute;
-            color: @body_background;
-            background-color: @primary_color;
-            font-size: 26vmin;
-            border-radius: @board_item_border-radius;
-            font-family: "Font Awesome 5 Free";
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-content: space-around;
-            flex-wrap: wrap;
+        &.game__board--win {
+
+            &::before {
+                content: "\f058";
+                position: absolute;
+                color: @body_background;
+                background-color: @primary_color;
+                font-size: 26vmin;
+                border-radius: @board_item_border-radius;
+                font-family: "Font Awesome 5 Free";
+                width: 100%;
+                height: 100%;
+                display: flex;
+                justify-content: center;
+                align-content: space-around;
+                flex-wrap: wrap;
+            }
+
+            .game__item--correct::before {
+                display: none;
+            }
+
+
         }
 
         .game__item {
@@ -121,7 +130,7 @@ body {
                 cursor: pointer;
             }
 
-            &--9 {
+            &--hidden {
                 opacity: 0;
 
                 &:hover {
