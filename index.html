@@ -35,8 +35,28 @@
         </div>
     </div>
 
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.9.4/firebase-app.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDbmErDqM2Bqm13cLpHl55EdOj9-zUVm-w",
+            authDomain: "shuffle-game.firebaseapp.com",
+            projectId: "shuffle-game",
+            storageBucket: "shuffle-game.appspot.com",
+            messagingSenderId: "523377019008",
+            appId: "1:523377019008:web:a9aa02378daed93e1e3e65"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+    </script>
     <script src="game.js"></script>
     <script src="grid.js"></script>
+    <script src="scores.js"></script>
 </body>
 
 </html>
