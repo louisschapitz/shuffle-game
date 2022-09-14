@@ -26,6 +26,28 @@ const game_timer = document.querySelector('.game__timer');
 let game_seconds = 0;
 const game_moves = document.querySelector('.game__count');
 let move_count = 0;
+let gameMessage = document.querySelector('.game__message');
+let playerName = localStorage.getItem('playerName');
+
+/*
+Spielernamen abfragen, wenn noch kein Name gespeichert ist
+- Begrüßungsnachricht ein- und ausblenden
+*/
+if (playerName === null || playerName === "") {
+    while (playerName === null || playerName === "") {
+        playerName = prompt("What's your name?");
+        localStorage.setItem('playerName', playerName);
+    }
+}
+else {
+    gameMessage.innerText = `Willkommen zurück, ${playerName}!`;
+    gameMessage.classList.add('active');
+
+    setTimeout(() => {
+        gameMessage.innerText = "";
+        gameMessage.classList.remove('active');
+    }, 2000);
+}
 
 // Funktion zum Einsetzen des HTML-Codes für jede Kachel in den Item-Container, und ausblenden des letzten Felds
 function new_pattern(items) {
@@ -42,7 +64,7 @@ function random_items() {
     current_items = all_items.slice().sort((a, b) => 0.5 - Math.random());
 
     // Debug, Easy order
-    // current_items = [1, 2, 3, 4, 5, 9, 7, 8, 6];
+    current_items = [1, 2, 3, 4, 5, 9, 7, 8, 6];
     // current_items = [1, 2, 3, 9, 5, 6, 7, 8, 4, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25];
 
     return current_items;
@@ -246,6 +268,18 @@ game_container.addEventListener('click', e => {
 
                 setTimeout(() => {
                     alert(`Gewonnen! Zeit: ${formatTime(win_time)} - Versuche: ${win_count}`);
+
+                    /*
+                    addDoc(colRef, {
+                        player: playerName,
+                        mode: difficulty_value,
+                        moves: win_count,
+                        time: win_time
+                    });
+                    */
+
+                    testf();
+
                     items_container.classList.toggle('game__board--disabled');
                     start_button.classList.toggle('game__btn--disabled');
                     restart_button.classList.toggle('game__btn--disabled');
