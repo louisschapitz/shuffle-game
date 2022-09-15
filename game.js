@@ -17,10 +17,11 @@ const start_button = document.querySelector('.game__btn--start');
 const restart_button = document.querySelector('.game__btn--restart');
 const btn_difficulty = document.querySelector('.game__btn--difficulty');
 let game_status = 0;
-let current_items;
+let currentItems;
 let all_items = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 const difficulty_states = ["easy2", "medium", "hard", "easy"];
 let difficulty_value = 0;
+let difficulty_value_text = difficulty_states[difficulty_states.length - 1];
 let row_limit = 3;
 const game_timer = document.querySelector('.game__timer');
 let game_seconds = 0;
@@ -28,6 +29,191 @@ const game_moves = document.querySelector('.game__count');
 let move_count = 0;
 let gameMessage = document.querySelector('.game__message');
 let playerName = localStorage.getItem('playerName');
+let gameStatsTable = document.querySelector('.game__stats table tbody');
+let gameStats = [];
+
+/*
+Firebase Firecloud Database
+
+Inneres HTML der Tabelle (Body) überschreiben mit Inhalt der Datenbank,
+sortiert nach Anzahl der Versuche und benötigter Zeit
+*/
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+import { getFirestore, onSnapshot, collection, addDoc, query, where } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyDbmErDqM2Bqm13cLpHl55EdOj9-zUVm-w",
+    authDomain: "shuffle-game.firebaseapp.com",
+    projectId: "shuffle-game",
+    storageBucket: "shuffle-game.appspot.com",
+    messagingSenderId: "523377019008",
+    appId: "1:523377019008:web:a9aa02378daed93e1e3e65"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore();
+const colRef = collection(db, "stats");
+
+const q = query(colRef, where("mode", "==", difficulty_value_text));
+
+onSnapshot(q, (snapshot) => {
+    gameStats = [];
+    snapshot.docs.forEach(doc => {
+        gameStats.push({ ...doc.data(), id: doc.id })
+    })
+
+    gameStats.sort(function (a, b) {
+        return a.moves - b.moves || a.time - b.time;
+    });
+
+    gameStatsTable.innerHTML = "";
+    for (let i = 0; i < gameStats.length; i++) {
+        gameStatsTable.innerHTML += `
+        <tr>
+            <td>${i + 1}</td>
+            <td>${gameStats[i].player}</td>
+            <td>${gameStats[i].mode}</td>
+            <td>${gameStats[i].moves}</td>
+            <td>${formatTime(gameStats[i].time)}</td>
+        </tr>
+        `;
+    }
+});
+
+/*
+Funktion zum Überprüfen, ob das übermittelte Feld neben dem leeren Feld liegt oder nicht.
+
+Wenn die übermittelte Kachel benachbart mit der leeren Kachel ist, dann wird diese
+mit der leeren Kachel getauscht und das Grid neu erstellt.
+
+----
+
+    Schleife: i ist gleich 0
+        Wenn i kleiner als item_limit (z. B. 9)
+            erhöhe i und die Quadratwurzel aus item_limit (z. B. 9 -> 3)
+
+            Schleife: i_sub ist gleich i
+                Wenn i_sub ist kleiner als col_limit + i
+                    erhöhe i um 1
+                    füge das aktuelle Item zum Array col_arr mit dem Wert aus dem zufälligen Array hinzu
+
+                        Wenn das aktuelle Item 9 (unsichtbar) ist
+                            setze den Wert i geteilt durch col_limit für column
+
+                    Füge alle einzelnen Items pro Zeile zusammen zum result_arr hinzu
+    Setze den Wert für row auf die Position des leeren Feldes (9) in der Zeile (column)
+*/
+
+function grid_positon(clicked) {
+    let item_limit = currentItems.length;
+    let col_limit = Math.sqrt(item_limit);
+    let empty_field_position = currentItems.indexOf(item_limit);
+    let result_arr = [];
+    let neighbours = [];
+    let row;
+    let column;
+
+    /*
+    Schleife, um multidimensionales Array zu erstellen und die
+    Position des unsichtbaren Felds in XY-Koordinaten zu erhalten
+    */
+    for (let i = 0; i < item_limit; i += col_limit) {
+        let col_arr = [];
+        for (let i_sub = i; i_sub < col_limit + i; i_sub++) {
+            col_arr.push(currentItems[i_sub]);
+
+            if (currentItems[i_sub] == item_limit) {
+                column = i / col_limit;
+            }
+        }
+        result_arr.push(col_arr);
+    }
+    row = result_arr[column].indexOf(item_limit);
+
+    /*
+    z. B.
+
+    Wenn
+        Zeile ist größer als 0
+            und
+        ein Feld über dem aktuellen Feld existiert
+    Dann
+        Füge die Position des Feldes in der aktuellen, zufälligen Reihenfolge
+        zum Array neighbours hinzu
+    */
+
+    // Item top
+    if (column > 0 && result_arr[column - 1][row]) {
+        neighbours.push(currentItems.indexOf(result_arr[column - 1][row]));
+    }
+
+    // Item bottom
+    if (column < result_arr.length - 1 && result_arr[column + 1][row]) {
+        neighbours.push(currentItems.indexOf(result_arr[column + 1][row]));
+    }
+
+    // Item left
+    if (result_arr[column][row - 1]) {
+        neighbours.push(currentItems.indexOf(result_arr[column][row - 1]));
+    }
+
+    // Item right
+    if (result_arr[column][row + 1]) {
+        neighbours.push(currentItems.indexOf(result_arr[column][row + 1]));
+    }
+
+
+    /*
+    Alte Version, nur 3x3:
+
+    if (difficulty_value == 0 || difficulty_value == 1) {
+        if (empty_field_position === 0) {
+            switch_allowed.push(1, 3);
+        }
+        else if (empty_field_position === 1) {
+            switch_allowed.push(0, 2, 4);
+        }
+        else if (empty_field_position === 2) {
+            switch_allowed.push(1, 5);
+        }
+        else if (empty_field_position === 3) {
+            switch_allowed.push(0, 4, 6);
+        }
+        else if (empty_field_position === 4) {
+            switch_allowed.push(1, 3, 5, 7);
+        }
+        else if (empty_field_position === 5) {
+            switch_allowed.push(2, 4, 8);
+        }
+        else if (empty_field_position === 6) {
+            switch_allowed.push(3, 7);
+        }
+        else if (empty_field_position === 7) {
+            switch_allowed.push(6, 4, 8);
+        }
+        else if (empty_field_position === 8) {
+            switch_allowed.push(5, 7);
+        }
+    }
+
+    */
+
+
+    if (neighbours.includes(clicked)) {
+        [currentItems[empty_field_position], currentItems[clicked]] = [currentItems[clicked], currentItems[empty_field_position]];
+        new_pattern(currentItems);
+        moveCount(1);
+        /* Kacheln switchen */
+    }
+    else {
+        if (clicked != empty_field_position) {
+            console.log('Die Kacheln müssen benachbart sein.');
+            /* Fehlermeldung */
+        }
+    }
+
+}
 
 /*
 Spielernamen abfragen, wenn noch kein Name gespeichert ist
@@ -40,12 +226,14 @@ if (playerName === null || playerName === "") {
     }
 }
 else {
-    gameMessage.innerText = `Willkommen zurück, ${playerName}!`;
+    gameMessage.innerText = `Welcome back, ${playerName}!`;
     gameMessage.classList.add('active');
+    document.body.classList.add('no-scrolling');
 
     setTimeout(() => {
         gameMessage.innerText = "";
         gameMessage.classList.remove('active');
+        document.body.classList.remove('no-scrolling');
     }, 2000);
 }
 
@@ -58,16 +246,16 @@ function new_pattern(items) {
     document.querySelector(`.game__item--${all_items.length}`).classList.add('game__item--hidden');
 }
 
-// Funktion, um den Array all_items neu in zufälliger Reihenfolge in der Variable current_items zu speichern
+// Funktion, um den Array all_items neu in zufälliger Reihenfolge in der Variable currentItems zu speichern
 // slice() gibt die kompletten Array-Elemente von X bis Y aus
 function random_items() {
-    current_items = all_items.slice().sort((a, b) => 0.5 - Math.random());
+    currentItems = all_items.slice().sort((a, b) => 0.5 - Math.random());
 
     // Debug, Easy order
-    current_items = [1, 2, 3, 4, 5, 9, 7, 8, 6];
-    // current_items = [1, 2, 3, 9, 5, 6, 7, 8, 4, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25];
+    currentItems = [1, 2, 3, 4, 5, 9, 7, 8, 6];
+    // currentItems = [1, 2, 3, 9, 5, 6, 7, 8, 4, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25];
 
-    return current_items;
+    return currentItems;
 }
 
 /*
@@ -100,7 +288,7 @@ Sobald der Button (difficulty) geklickt wurde und das Spiel inaktiv ist:
 */
 btn_difficulty.addEventListener('click', () => {
     if (game_status == 0) {
-        let difficulty_value_text = difficulty_states[difficulty_value];
+        difficulty_value_text = difficulty_states[difficulty_value];
         btn_difficulty.innerText = difficulty_value_text;
         difficulty_value = (difficulty_value + 1) % difficulty_states.length;
 
@@ -129,9 +317,9 @@ btn_difficulty.addEventListener('click', () => {
 
 // Funktion, um allen Kacheln die CSS-Klasse game__item--correct hinzuzufügen, die sich an der richtigen Stelle befinden
 function correctMarker() {
-    for (let i = 0; i < current_items.length; i++) {
-        if (current_items[i] == all_items[i]) {
-            document.querySelector('.game__item--' + current_items[i]).classList.add('game__item--correct');
+    for (let i = 0; i < currentItems.length; i++) {
+        if (currentItems[i] == all_items[i]) {
+            document.querySelector('.game__item--' + currentItems[i]).classList.add('game__item--correct');
         }
     }
 }
@@ -254,11 +442,11 @@ game_container.addEventListener('click', e => {
     if (game_status === 1) {
 
         if (e.target.classList.contains('game__item')) {
-            let clicked = current_items.indexOf(Number(e.target.innerText));
+            let clicked = currentItems.indexOf(Number(e.target.innerText));
             grid_positon(clicked);
             correctMarker();
 
-            if (all_items.toString() === current_items.toString()) {
+            if (all_items.toString() === currentItems.toString()) {
 
                 items_container.classList.add('game__board--win');
                 let win_time = game_seconds;
@@ -269,17 +457,14 @@ game_container.addEventListener('click', e => {
                 setTimeout(() => {
                     alert(`Gewonnen! Zeit: ${formatTime(win_time)} - Versuche: ${win_count}`);
 
-                    /*
                     addDoc(colRef, {
                         player: playerName,
-                        mode: difficulty_value,
+                        mode: difficulty_value_text,
                         moves: win_count,
                         time: win_time
                     });
-                    */
 
-                    testf();
-
+                    new_pattern(all_items);
                     items_container.classList.toggle('game__board--disabled');
                     start_button.classList.toggle('game__btn--disabled');
                     restart_button.classList.toggle('game__btn--disabled');
