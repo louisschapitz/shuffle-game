@@ -38,7 +38,6 @@ Firebase Firecloud Database
 Inneres HTML der Tabelle (Body) überschreiben mit Inhalt der Datenbank,
 sortiert nach Anzahl der Versuche und benötigter Zeit
 */
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
 import { getFirestore, onSnapshot, collection, addDoc, query, where } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
 
@@ -55,30 +54,67 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore();
 const colRef = collection(db, "stats");
 
-const q = query(colRef, where("mode", "==", difficulty_value_text));
+// const q = query(colRef, where("mode", "==", difficulty_value_text));
 
-onSnapshot(q, (snapshot) => {
-    gameStats = [];
-    snapshot.docs.forEach(doc => {
-        gameStats.push({ ...doc.data(), id: doc.id })
-    })
+function gameStatsTableRefresh() {
 
     gameStats.sort(function (a, b) {
         return a.moves - b.moves || a.time - b.time;
     });
 
+    /*
+    Nur jeweils besten Versuch anzeigen, funktioniert noch nicht ;-)
+    */
+
+    let data = gameStats;
+    let titles = [];
+    let uniquesData = [];
+    let index;
+    for (let i = 0; i < data.length; i++) {
+        index = titles.indexOf(data[i].player);
+        if (index == -1) {
+            titles.push(data[i].player);
+            uniquesData.push(data[i]);
+        } else {
+            uniquesData[index].DIFF += data[i].DIFF;
+        }
+    }
+    data = uniquesData;
+
+    console.log(gameStats);
+    console.log(data);
+
+    let count = 1;
+
     gameStatsTable.innerHTML = "";
     for (let i = 0; i < gameStats.length; i++) {
-        gameStatsTable.innerHTML += `
-        <tr>
-            <td>${i + 1}</td>
-            <td>${gameStats[i].player}</td>
-            <td>${gameStats[i].mode}</td>
-            <td>${gameStats[i].moves}</td>
-            <td>${formatTime(gameStats[i].time)}</td>
-        </tr>
-        `;
+        let player = gameStats[i].player;
+        let mode = gameStats[i].mode;
+        let moves = gameStats[i].moves;
+        let time = formatTime(gameStats[i].time);
+
+        if (difficulty_value_text === mode) {
+            gameStatsTable.innerHTML += `
+            <tr>
+                <td>${count}</td>
+                <td>${player}</td>
+                <td>${mode}</td>
+                <td>${moves}</td>
+                <td>${time}</td>
+            </tr>
+            `;
+            count++;
+        }
     }
+}
+
+onSnapshot(colRef, (snapshot) => {
+    gameStats = [];
+    snapshot.docs.forEach(doc => {
+        gameStats.push({ ...doc.data(), id: doc.id })
+    });
+
+    gameStatsTableRefresh();
 });
 
 /*
@@ -162,7 +198,6 @@ function grid_positon(clicked) {
     if (result_arr[column][row + 1]) {
         neighbours.push(currentItems.indexOf(result_arr[column][row + 1]));
     }
-
 
     /*
     Alte Version, nur 3x3:
@@ -311,6 +346,7 @@ btn_difficulty.addEventListener('click', () => {
             row_limit = 5;
         }
 
+        gameStatsTableRefresh();
         all_items_refresh(row_limit);
     }
 });
