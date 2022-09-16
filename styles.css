@@ -220,7 +220,7 @@ body.no-scrolling {
   background-color: rgba(255, 255, 255, 0.8);
   z-index: 1;
 }
-.game__stats {
+.game__log {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -228,27 +228,30 @@ body.no-scrolling {
   width: 100%;
   margin-bottom: 10vmin;
 }
-.game__stats h1 {
+.game__log .game__highscores {
+  margin-bottom: 10vmin;
+}
+.game__log h1 {
   margin: 0 0 4vmin 0;
   font-size: 8vmin;
 }
-.game__stats table {
+.game__log table {
   width: 100%;
   max-width: 90vmin;
   table-layout: fixed;
   text-align: left;
 }
-.game__stats table tr.active {
+.game__log table tr.active {
   color: #E74C3C;
 }
-.game__stats table th {
+.game__log table th {
   text-transform: uppercase;
 }
-.game__stats table th,
-.game__stats table td {
+.game__log table th,
+.game__log table td {
   padding: 0;
 }
-@media (max-width: 360px) {
+@media (max-width: 460px) {
   body {
     font-size: 5vmin;
   }
@@ -278,25 +281,25 @@ body.no-scrolling {
     padding: 3vmin;
     width: 40vmin;
   }
-  .game__stats table {
+  .game__log table {
     max-width: 70vmin;
   }
-  .game__stats table thead {
+  .game__log table thead {
     display: none;
   }
-  .game__stats table tr {
+  .game__log table tr {
     display: block;
     margin-bottom: 4vmin;
   }
-  .game__stats table tr:last-of-type {
+  .game__log table tr:last-of-type {
     margin: 0;
   }
-  .game__stats table th,
-  .game__stats table td {
+  .game__log table th,
+  .game__log table td {
     display: flex;
     justify-content: space-between;
   }
-  .game__stats table td::before {
+  .game__log table td::before {
     content: attr(data-title);
     display: inline-block;
     font-weight: bold;

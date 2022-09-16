@@ -29,17 +29,19 @@ const game_moves = document.querySelector('.game__count');
 let move_count = 0;
 let gameMessage = document.querySelector('.game__message');
 let playerName = localStorage.getItem('playerName');
-let gameStatsTable = document.querySelector('.game__stats table tbody');
+let gameHighscoresTable = document.querySelector('.game__log .game__highscores tbody');
+let gameStatsTable = document.querySelector('.game__log .game__stats tbody');
 let gameStats = [];
 
 /*
 Firebase Firecloud Database
 
 Inneres HTML der Tabelle (Body) überschreiben mit Inhalt der Datenbank,
-sortiert nach Anzahl der Versuche und benötigter Zeit
+sortiert nach Anzahl der Versuche und benötigter Zeit,
+bester Versuch pro Person wird in der Tabelle angezeigt
 */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
-import { getFirestore, onSnapshot, collection, addDoc, query, where } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+import { getFirestore, onSnapshot, collection, addDoc, query, where, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyDbmErDqM2Bqm13cLpHl55EdOj9-zUVm-w",
@@ -54,44 +56,41 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore();
 const colRef = collection(db, "stats");
 
-// const q = query(colRef, where("mode", "==", difficulty_value_text));
+const q = query(colRef, orderBy('createdAt'));
 
 function gameStatsTableRefresh() {
 
-    gameStats.sort(function (a, b) {
-        return a.moves - b.moves || a.time - b.time;
-    });
-
-    /*
-    Nur jeweils besten Versuch anzeigen, funktioniert noch nicht ;-)
-    */
-
-    let data = [];
+    let dataHighscores = [];
     gameStats.forEach(entry => {
         let player = entry.player;
         let mode = entry.mode;
         let add = true;
 
-        data.forEach(dataEntry => {
+        dataHighscores.forEach(dataEntry => {
             if (dataEntry.player === player && dataEntry.mode === mode) {
                 add = false;
             }
         });
 
         if (add) {
-            data.push(entry);
+            dataHighscores.push(entry);
         }
     });
-    gameStats = data;
 
-    let count = 1;
+    dataHighscores.sort(function (a, b) {
+        return a.moves - b.moves || a.time - b.time;
+    });
 
-    gameStatsTable.innerHTML = "";
-    for (let i = 0; i < gameStats.length; i++) {
-        let player = gameStats[i].player;
-        let mode = gameStats[i].mode;
-        let moves = gameStats[i].moves;
-        let time = formatTime(gameStats[i].time);
+
+    // Idee: Darunter Tabelle mit allen Daten, sortiert nach createdAt
+
+    let countHighscores = 1;
+    gameHighscoresTable.innerHTML = "";
+    for (let i = 0; i < dataHighscores.length; i++) {
+        let player = dataHighscores[i].player;
+        let mode = dataHighscores[i].mode;
+        let moves = dataHighscores[i].moves;
+        let time = formatTime(dataHighscores[i].time);
 
         if (difficulty_value_text === mode) {
             let currentPlayer = "";
@@ -99,21 +98,47 @@ function gameStatsTableRefresh() {
                 currentPlayer = ' class="active"';
             }
 
-            gameStatsTable.innerHTML += `
+            gameHighscoresTable.innerHTML += `
             <tr${currentPlayer}>
-                <td data-title="Rank">${count}</td>
+                <td data-title="Rank">${countHighscores}</td>
                 <td data-title="Player">${player}</td>
                 <td data-title="Mode">${mode}</td>
                 <td data-title="Moves">${moves}</td>
                 <td data-title="Time">${time}</td>
             </tr>
             `;
-            count++;
+            countHighscores++;
         }
     }
+
+    let countStats = 1;
+    gameStatsTable.innerHTML = "";
+    for (let i = 0; i < gameStats.length; i++) {
+        let player = gameStats[i].player;
+        let mode = gameStats[i].mode;
+        let moves = gameStats[i].moves;
+        let time = formatTime(gameStats[i].time);
+
+        let currentPlayer = "";
+        if (player == playerName) {
+            currentPlayer = ' class="active"';
+        }
+
+        gameStatsTable.innerHTML += `
+            <tr${currentPlayer}>
+                <td data-title="Rank">${countStats}</td>
+                <td data-title="Player">${player}</td>
+                <td data-title="Mode">${mode}</td>
+                <td data-title="Moves">${moves}</td>
+                <td data-title="Time">${time}</td>
+            </tr>
+            `;
+        countStats++;
+    }
+
 }
 
-onSnapshot(colRef, (snapshot) => {
+onSnapshot(q, (snapshot) => {
     gameStats = [];
     snapshot.docs.forEach(doc => {
         gameStats.push({ ...doc.data(), id: doc.id })
@@ -476,6 +501,8 @@ Wenn das Spiel läuft und das Ziel eine Kachel ist:
         - Aktuelle Timerzeit wird in der Variable win_time gespeichert
             Nach 1000ms:
              - Meldung "Gewonnen!" mit der Spielzeit win_time wird angezeigt
+             - Neuer Eintrag in Firebase/Firecloud wird erstellt und in die Tabelle aufgenommen,
+               wenn es der 1. oder beste Versuch ist
              - CSS-Klassen werden umgeschaltet
 */
 game_container.addEventListener('click', e => {
@@ -497,14 +524,13 @@ game_container.addEventListener('click', e => {
 
                 setTimeout(() => {
                     alert(`Gewonnen! Zeit: ${formatTime(win_time)} - Versuche: ${win_count}`);
-
                     addDoc(colRef, {
                         player: playerName,
                         mode: difficulty_value_text,
                         moves: win_count,
-                        time: win_time
+                        time: win_time,
+                        createdAt: serverTimestamp()
                     });
-
                     new_pattern(all_items);
                     items_container.classList.toggle('game__board--disabled');
                     start_button.classList.toggle('game__btn--disabled');

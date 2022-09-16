@@ -290,13 +290,17 @@ body {
 
 }
 
-.game__stats {
+.game__log {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     width: 100%;
     margin-bottom: 10vmin;
+
+    .game__highscores {
+        margin-bottom: 10vmin;
+    }
 
     h1 {
         margin: 0 0 4vmin 0;
@@ -324,7 +328,7 @@ body {
     }
 }
 
-@media (max-width: 360px) {
+@media (max-width: 460px) {
     body {
         font-size: @body_font-size_mobile;
     }
@@ -368,7 +372,7 @@ body {
 
     }
 
-    .game__stats {
+    .game__log {
         table {
             max-width: @board_size_mobile;
 
