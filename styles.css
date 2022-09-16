@@ -253,7 +253,7 @@ body.no-scrolling {
 .game__log table td {
   padding: 0;
 }
-@media (max-width: 600px) {
+@media (max-width: 450px) {
   body {
     font-size: 5vmin;
   }
