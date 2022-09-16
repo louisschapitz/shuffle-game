@@ -34,11 +34,12 @@ let gameStatsTable = document.querySelector('.game__log .game__stats tbody');
 let gameStats = [];
 
 /*
-Firebase Firecloud Database
+Firebase / Firecloud Database
 
 Inneres HTML der Tabelle (Body) überschreiben mit Inhalt der Datenbank,
 sortiert nach Anzahl der Versuche und benötigter Zeit,
-bester Versuch pro Person wird in der Tabelle angezeigt
+bester Versuch pro Person wird in der Tabelle angezeigt,
+weitere Tabelle als Log für alle Versuche
 */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
 import { getFirestore, onSnapshot, collection, addDoc, query, where, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
@@ -56,7 +57,8 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore();
 const colRef = collection(db, "stats");
 
-const q = query(colRef, orderBy('createdAt'));
+// Timestamp-Sortierung, absteigend
+const q = query(colRef, orderBy('createdAt', 'desc'));
 
 function gameStatsTableRefresh() {
 
@@ -80,9 +82,6 @@ function gameStatsTableRefresh() {
     dataHighscores.sort(function (a, b) {
         return a.moves - b.moves || a.time - b.time;
     });
-
-
-    // Idee: Darunter Tabelle mit allen Daten, sortiert nach createdAt
 
     let countHighscores = 1;
     gameHighscoresTable.innerHTML = "";
@@ -111,7 +110,6 @@ function gameStatsTableRefresh() {
         }
     }
 
-    let countStats = 1;
     gameStatsTable.innerHTML = "";
     for (let i = 0; i < gameStats.length; i++) {
         let player = gameStats[i].player;
@@ -126,14 +124,13 @@ function gameStatsTableRefresh() {
 
         gameStatsTable.innerHTML += `
             <tr${currentPlayer}>
-                <td data-title="Rank">${countStats}</td>
+                <td data-title="ID">${gameStats.length - i}</td>
                 <td data-title="Player">${player}</td>
                 <td data-title="Mode">${mode}</td>
                 <td data-title="Moves">${moves}</td>
                 <td data-title="Time">${time}</td>
             </tr>
             `;
-        countStats++;
     }
 
 }
