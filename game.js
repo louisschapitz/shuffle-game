@@ -261,7 +261,6 @@ function grid_positon(clicked) {
 
     */
 
-
     if (neighbours.includes(clicked)) {
         [currentItems[empty_field_position], currentItems[clicked]] = [currentItems[clicked], currentItems[empty_field_position]];
         new_pattern(currentItems);
