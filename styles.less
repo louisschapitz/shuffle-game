@@ -305,9 +305,22 @@ body {
 
     table {
         width: 100%;
-        max-width: 100vmin;
+        max-width: @menu_size;
         table-layout: fixed;
         text-align: left;
+
+        tr.active {
+            color: @accent_color;
+        }
+
+        th {
+            text-transform: uppercase;
+        }
+
+        th,
+        td {
+            padding: 0;
+        }
     }
 }
 
@@ -353,5 +366,37 @@ body {
 
         }
 
+    }
+
+    .game__stats {
+        table {
+            max-width: @board_size_mobile;
+
+            thead {
+                display: none;
+            }
+
+            tr {
+                display: block;
+                margin-bottom: 4vmin;
+
+                &:last-of-type {
+                    margin: 0;
+                }
+            }
+
+            th,
+            td {
+                display: flex;
+                justify-content: space-between;
+            }
+
+            td::before {
+                content: attr(data-title);
+                display: inline-block;
+                font-weight: bold;
+                text-transform: uppercase;
+            }
+        }
     }
 }

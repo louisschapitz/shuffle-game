@@ -234,9 +234,19 @@ body.no-scrolling {
 }
 .game__stats table {
   width: 100%;
-  max-width: 100vmin;
+  max-width: 90vmin;
   table-layout: fixed;
   text-align: left;
+}
+.game__stats table tr.active {
+  color: #E74C3C;
+}
+.game__stats table th {
+  text-transform: uppercase;
+}
+.game__stats table th,
+.game__stats table td {
+  padding: 0;
 }
 @media (max-width: 360px) {
   body {
@@ -267,5 +277,29 @@ body.no-scrolling {
   .game .game__menu .game__btn {
     padding: 3vmin;
     width: 40vmin;
+  }
+  .game__stats table {
+    max-width: 70vmin;
+  }
+  .game__stats table thead {
+    display: none;
+  }
+  .game__stats table tr {
+    display: block;
+    margin-bottom: 4vmin;
+  }
+  .game__stats table tr:last-of-type {
+    margin: 0;
+  }
+  .game__stats table th,
+  .game__stats table td {
+    display: flex;
+    justify-content: space-between;
+  }
+  .game__stats table td::before {
+    content: attr(data-title);
+    display: inline-block;
+    font-weight: bold;
+    text-transform: uppercase;
   }
 }

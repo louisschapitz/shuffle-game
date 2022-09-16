@@ -66,23 +66,23 @@ function gameStatsTableRefresh() {
     Nur jeweils besten Versuch anzeigen, funktioniert noch nicht ;-)
     */
 
-    let data = gameStats;
-    let titles = [];
-    let uniquesData = [];
-    let index;
-    for (let i = 0; i < data.length; i++) {
-        index = titles.indexOf(data[i].player);
-        if (index == -1) {
-            titles.push(data[i].player);
-            uniquesData.push(data[i]);
-        } else {
-            uniquesData[index].DIFF += data[i].DIFF;
-        }
-    }
-    data = uniquesData;
+    let data = [];
+    gameStats.forEach(entry => {
+        let player = entry.player;
+        let mode = entry.mode;
+        let add = true;
 
-    console.log(gameStats);
-    console.log(data);
+        data.forEach(dataEntry => {
+            if (dataEntry.player === player && dataEntry.mode === mode) {
+                add = false;
+            }
+        });
+
+        if (add) {
+            data.push(entry);
+        }
+    });
+    gameStats = data;
 
     let count = 1;
 
@@ -94,13 +94,18 @@ function gameStatsTableRefresh() {
         let time = formatTime(gameStats[i].time);
 
         if (difficulty_value_text === mode) {
+            let currentPlayer = "";
+            if (player == playerName) {
+                currentPlayer = ' class="active"';
+            }
+
             gameStatsTable.innerHTML += `
-            <tr>
-                <td>${count}</td>
-                <td>${player}</td>
-                <td>${mode}</td>
-                <td>${moves}</td>
-                <td>${time}</td>
+            <tr${currentPlayer}>
+                <td data-title="Rank">${count}</td>
+                <td data-title="Player">${player}</td>
+                <td data-title="Mode">${mode}</td>
+                <td data-title="Moves">${moves}</td>
+                <td data-title="Time">${time}</td>
             </tr>
             `;
             count++;
