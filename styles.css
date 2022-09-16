@@ -226,7 +226,7 @@ body.no-scrolling {
   justify-content: center;
   align-items: center;
   width: 100%;
-  margin-bottom: 20vmin;
+  margin: 20vmin 0;
 }
 .game__log .game__highscores {
   margin-bottom: 10vmin;
@@ -246,11 +246,14 @@ body.no-scrolling {
 .game__log table th {
   text-transform: uppercase;
 }
+.game__log table th:first-of-type {
+  width: 16%;
+}
 .game__log table th,
 .game__log table td {
   padding: 0;
 }
-@media (max-width: 460px) {
+@media (max-width: 600px) {
   body {
     font-size: 5vmin;
   }

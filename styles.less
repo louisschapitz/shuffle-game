@@ -296,7 +296,7 @@ body {
     justify-content: center;
     align-items: center;
     width: 100%;
-    margin-bottom: 20vmin;
+    margin: 20vmin 0;
 
     .game__highscores {
         margin-bottom: 10vmin;
@@ -318,6 +318,10 @@ body {
 
         th {
             text-transform: uppercase;
+
+            &:first-of-type {
+                width: 16%;
+            }
         }
 
         th,
@@ -327,7 +331,7 @@ body {
     }
 }
 
-@media (max-width: 460px) {
+@media (max-width: 600px) {
     body {
         font-size: @body_font-size_mobile;
     }
